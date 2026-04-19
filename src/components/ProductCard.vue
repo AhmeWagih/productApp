@@ -26,7 +26,7 @@
 
     <div class="space-y-4 p-5">
       <div>
-        <h2 class="line-clamp-1 text-xl font-bold">{{ product.name }}</h2>
+        <h2 class="line-clamp-1 text-xl font-bold">{{ product.title }}</h2>
         <p class="mt-2 line-clamp-2 text-sm leading-6 text-base-content/70">
           {{ product.description }}
         </p>

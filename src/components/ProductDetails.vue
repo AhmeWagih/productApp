@@ -27,7 +27,7 @@
         </figure>
 
         <div class="space-y-5 p-6 md:p-7">
-          <h1 class="text-3xl font-bold leading-tight">{{ product.name }}</h1>
+          <h1 class="text-3xl font-bold leading-tight">{{ product.title }}</h1>
           <p class="text-base leading-7 text-base-content/75">{{ product.description }}</p>
 
           <div class="flex flex-wrap items-center gap-3">
@@ -55,7 +55,12 @@
           </div>
 
           <div class="pt-1">
-            <button class="btn w-full md:w-auto" :class="getCTAClass" :disabled="!inStock" @click="handleClick">
+            <button
+              class="btn w-full md:w-auto outline-none border-none"
+              :class="getCTAClass"
+              :disabled="!inStock"
+              @click="handleAddToCart"
+            >
               {{ getCTALabel }}
             </button>
           </div>
@@ -67,6 +72,8 @@
 
 <script setup>
 import { computed } from "vue";
+import { useRouter } from "vue-router";
+import { useCartStore } from "@/store/cart";
 
 const props = defineProps({
   product: {
@@ -75,6 +82,8 @@ const props = defineProps({
   },
 });
 
+const cartStore = useCartStore();
+const router = useRouter();
 const product = computed(() => props.product);
 
 const inStock = computed(() => Number(props.product.stock) > 0);
@@ -98,16 +107,19 @@ const originalPrice = computed(() => {
 });
 
 const getCTALabel = computed(() => {
-  return inStock.value ? "Buy Now" : "Out of Stock";
+  return inStock.value ? "Add to Cart" : "Out of Stock";
 });
 
 const getCTAClass = computed(() => {
   return inStock.value ? "btn-primary" : "btn-disabled";
 });
 
-const emit = defineEmits(['buy'])
-function handleClick() {
-  emit('buy', props.product.id)
-  console.log(`buy clicked for product id: ${props.product.id}`)
-}
+const handleAddToCart = async () => {
+  const added = await cartStore.addToCart(props.product);
+
+  if (added && product.value) {
+    product.value.stock = Math.max(Number(product.value.stock || 0) - 1, 0);
+    router.push({ name: "Cart" });
+  }
+};
 </script>

@@ -83,29 +83,14 @@ const viewProps = computed(() => {
   return {};
 });
 
-
-function handleBuy(productId) {
-  const id = Number(productId);
-  const product = products.value.find((p) => p.id === id);
-  if (!product || Number(product.stock) <= 0) return;
-
-  const updateStock = Math.max(0, Number(product.stock ?? 0) - 1);
-  product.stock = updateStock;
-  console.log(`Purchased product #${id}. Remaining stock: ${product.stock}`);
-}
-
-const emit = defineEmits(['buy'])
-
-const totalStock = computed(() => products.value.reduce((acc, p) => acc + (p.stock !== undefined  ? p.stock : 0), 0));
-
 </script>
 
 <template>
   <div class="flex flex-col">
-    <Navbar :totalStock="totalStock" :brand="storeName" :links="navLinks" />
+    <Navbar :brand="storeName" :links="navLinks" />
     <main class="flex flex-col gap-6">
       <RouterView v-slot="{ Component }">
-        <component :is="Component" v-bind="viewProps" @buy="handleBuy" />
+        <component :is="Component" v-bind="viewProps" />
       </RouterView>
     </main>
     <Footer />

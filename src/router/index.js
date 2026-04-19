@@ -39,6 +39,15 @@ const routes = [
       allowedRoles: [],
     },
   },
+  {
+    path: "/cart",
+    name: "Cart",
+    component: () => import("../views/CartView.vue"),
+    meta: {
+      requiresAuth: false,
+      allowedRoles: [],
+    },
+  },
 ];
 
 const router = createRouter({
